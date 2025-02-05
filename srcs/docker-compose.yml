@@ -1,0 +1,71 @@
+services:
+    mariadb:
+        image: mariadb
+        build:
+            context: ./requirements/mariadb
+            dockerfile: Dockerfile
+        container_name: mariadb
+        env_file:
+            - ./.env
+        #environment:
+        #    MYSQL_ROOT_PASSWORD: root_password
+        #    MYSQL_DATABASE: my_database
+        #    MYSQL_USER: my_user
+        #    MYSQL_PASSWORD: my_password
+        volumes:
+            - data_mysql:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        networks:
+            - intra
+        restart: always
+    wordpress:
+        image: wordpress
+        build:
+            context: ./requirements/wordpress
+            dockerfile: Dockerfile
+        container_name: wordpress
+        env_file:
+            - ./.env
+        volumes:
+            - data:/var/www/html
+        networks:
+            - intra
+        depends_on:
+            - mariadb
+        expose:
+            - "9000"
+        restart: always
+    nginx:
+        image: nginx
+        build:
+            context: ./requirements/nginx
+            dockerfile: Dockerfile
+        container_name: nginx
+        ports:
+            - "443:443"
+        volumes:
+            - data:/var/www/html
+        networks:
+            - intra
+        depends_on:
+            - wordpress
+        restart: always
+
+volumes:
+    data:
+        driver: local
+        driver_opts:
+            type: none
+            device: /home/seungryk/data/wp
+            o: bind 
+    data_mysql:
+        driver: local
+        driver_opts:
+            type: none
+            device: /home/seungryk/data/db
+            o: bind 
+
+networks:
+    intra:
+        driver: bridge
