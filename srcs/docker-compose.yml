@@ -5,14 +5,13 @@ services:
             context: ./requirements/mariadb
             dockerfile: Dockerfile
         container_name: mariadb
-        env_file:
-            - ./.env
+        env_file: .env
         #environment:
-        #    MYSQL_ROOT_PASSWORD: root_password
-        #    MYSQL_DATABASE: my_database
-        #    MYSQL_USER: my_user
-        #    MYSQL_PASSWORD: my_password
-        volumes:
+        #    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        #    MYSQL_DATABASE: ${MYSQL_DATABASE}
+        #    MYSQL_USER: ${MYSQL_USER}
+        #    MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        volumes: 
             - data_mysql:/var/lib/mysql
         ports:
             - "3306:3306"
@@ -26,7 +25,7 @@ services:
             dockerfile: Dockerfile
         container_name: wordpress
         env_file:
-            - ./.env
+            - .env
         volumes:
             - data:/var/www/html
         networks:
