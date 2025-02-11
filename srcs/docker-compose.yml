@@ -6,13 +6,8 @@ services:
             dockerfile: Dockerfile
         container_name: mariadb
         env_file: .env
-        #environment:
-        #    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-        #    MYSQL_DATABASE: ${MYSQL_DATABASE}
-        #    MYSQL_USER: ${MYSQL_USER}
-        #    MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         volumes: 
-            - data_mysql:/var/lib/mysql
+            - data_db:/var/lib/mysql
         ports:
             - "3306:3306"
         networks:
@@ -24,10 +19,9 @@ services:
             context: ./requirements/wordpress
             dockerfile: Dockerfile
         container_name: wordpress
-        env_file:
-            - .env
+        env_file: .env
         volumes:
-            - data:/var/www/html
+            - data_wp:/var/www/html
         networks:
             - intra
         depends_on:
@@ -44,7 +38,7 @@ services:
         ports:
             - "443:443"
         volumes:
-            - data:/var/www/html
+            - data_wp:/var/www/html
         networks:
             - intra
         depends_on:
@@ -52,13 +46,13 @@ services:
         restart: always
 
 volumes:
-    data:
+    data_wp:
         driver: local
         driver_opts:
             type: none
             device: /home/seungryk/data/wp
             o: bind 
-    data_mysql:
+    data_db:
         driver: local
         driver_opts:
             type: none

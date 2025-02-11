@@ -19,9 +19,10 @@ RUN mkdir -p /var/www/html /run/php && \
 
 RUN sed -i 's/^listen = .*/listen = 0.0.0.0:9000/' /etc/php/7.4/fpm/pool.d/www.conf
 
-COPY ./conf/wp-config.php /var/www/html/my-config.php
 COPY ./tools/setup.sh /usr/local/bin/setup.sh
 
 RUN chmod +x /usr/local/bin/setup.sh
 
-CMD ["/usr/bin/tini", "--", "/usr/local/bin/setup.sh"]
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/setup.sh"]
+
+CMD ["php-fpm7.4", "-F"]

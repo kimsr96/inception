@@ -17,7 +17,6 @@ EOF
 
 mysql < /initial.sql
 
-sleep 5
 service mariadb stop
 
 exec "$@"
